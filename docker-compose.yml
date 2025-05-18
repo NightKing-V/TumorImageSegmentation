@@ -1,0 +1,17 @@
+services:
+  tensorflow:
+    build:
+      context: .  # Set context to the Model folder
+      dockerfile: Dockerfile  # Specify the Dockerfile location
+    image: accordoai-jupyter  # Tag the built image
+    container_name: accordoai_model
+    ports:
+      - "8888:8888"  # Map Jupyter Lab to your local machine
+    volumes:
+      - .:/tf/Model  # Bind-mount the local Model directory
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]  # Ensure GPU support is enabled
+    command: jupyter lab --ip=0.0.0.0 --allow-root --no-browser
