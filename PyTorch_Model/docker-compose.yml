@@ -1,0 +1,16 @@
+services:
+  braintumor:
+    build:
+      context: .  # Set context to the Model folder
+      dockerfile: Dockerfile  # Specify the Dockerfile location
+    container_name: braintumor
+    ports:
+      - "8888:8888"  # Map Jupyter Lab to your local machine
+    volumes:
+      - .:/Model  # Bind-mount the local Model directory
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]  # Ensure GPU support is enabled
+    command: jupyter lab --ip=0.0.0.0 --allow-root --no-browser

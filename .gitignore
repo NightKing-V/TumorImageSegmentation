@@ -1,3 +1,6 @@
-/preprocessed
-/input
-/split_data
+*/preprocessed
+*/input
+*/split_data
+
+*.gz
+*.h5
