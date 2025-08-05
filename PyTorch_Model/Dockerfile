@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cu121
 
 # Install any necessary dependencies here
-RUN pip install --no-cache-dir numpy pandas matplotlib nibabel opencv-python h5py jupyter
+RUN pip install --no-cache-dir numpy pandas matplotlib nibabel opencv-python h5py jupyter scikit-learn albumentations tqdm
 
 # Default command to run Jupyter Lab
 # CMD ["jupyter", "lab", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
