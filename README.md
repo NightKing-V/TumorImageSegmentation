@@ -3,16 +3,21 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org/)
 [![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)](https://keras.io/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-27338e?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-> 🎯 A PyTorch & TensorFlow implementation of **U-Net** for precise brain tumor segmentation on 2D MRI slices
+> 🎯 A **PyTorch** & TensorFlow implementation of **U-Net** for precise brain tumor segmentation on MRI slices
+> 
+> **⭐ Primary Implementation**: PyTorch version with 90% accuracy
 
 ---
 
 ## 🚀 What is this?
 
-This project implements the **U-Net** convolutional neural network architecture for **medical image segmentation**. The model is specifically trained to detect and segment brain tumors from 2D MRI slices, producing pixel-level segmentation masks that accurately outline tumor regions.
+This project implements the **U-Net** convolutional neural network architecture for **medical image segmentation**. The **primary PyTorch implementation** is specifically trained to detect and segment brain tumors from 2D MRI slices, producing pixel-level segmentation masks that accurately outline tumor regions.
+
+> **🎯 Main Focus**: The PyTorch version serves as the primary implementation with comprehensive training, evaluation, and performance metrics. TensorFlow implementation is provided as an alternative framework option.
 
 ### 🔍 Key Features
 
@@ -25,26 +30,39 @@ This project implements the **U-Net** convolutional neural network architecture 
 
 ## 📊 Dataset Overview
 
-### 📁 LGG MRI Segmentation Dataset
-**Source**: Brain MRI images together with manual FLAIR abnormality segmentation masks from The Cancer Imaging Archive (TCIA) and The Cancer Genome Atlas (TCGA)
+### 📁 Available Datasets
 
-**Download Dataset:**
+#### **PyTorch Implementation**
+**LGG MRI Segmentation Dataset**
+- **Source**: Brain MRI images with manual FLAIR abnormality segmentation masks from TCIA and TCGA
+- **Download**:
 ```python
 import kagglehub
 path = kagglehub.dataset_download("mateuszbuda/lgg-mri-segmentation")
 ```
-
 **🔗 Dataset Link**: [Kaggle - LGG MRI Segmentation](https://www.kaggle.com/datasets/mateuszbuda/lgg-mri-segmentation)
 
-| **Metric** | **Value** |
-|------------|-----------|
-| **Type** | 2D MRI slices with binary tumor masks |
-| **Patients** | 110 patients with lower-grade gliomas |
-| **Training Samples** | ~2,985 |
-| **Validation Samples** | ~747 |
-| **Test Samples** | ~197 |
-| **Format** | (Image, Mask) pairs |
-| **Labels** | Binary: `1` = tumor, `0` = background |
+#### **TensorFlow Implementation** 
+**BraTS 2019 Dataset**
+- **Source**: MICCAI's Dataset on Brain Tumor Segmentation (Year 2019)
+- **Download**:
+```python
+import kagglehub
+path = kagglehub.dataset_download("aryashah2k/brain-tumor-segmentation-brats-2019")
+```
+**🔗 Dataset Link**: [Kaggle - BraTS 2019](https://www.kaggle.com/datasets/aryashah2k/brain-tumor-segmentation-brats-2019)
+
+### 📊 Dataset Statistics
+
+| **Metric** | **LGG (PyTorch)** | **BraTS 2019 (TensorFlow)** |
+|------------|-------------------|------------------------------|
+| **Type** | 2D MRI slices with binary masks | Multi-modal 3D MRI volumes |
+| **Patients** | 110 patients with lower-grade gliomas | 335+ patients with gliomas |
+| **Training Samples** | ~2,985 | Variable (3D volumes) |
+| **Validation Samples** | ~747 | Variable (3D volumes) |
+| **Test Samples** | ~197 | Variable (3D volumes) |
+| **Format** | (Image, Mask) pairs | Multi-modal (T1, T1ce, T2, FLAIR) |
+| **Labels** | Binary: `1` = tumor, `0` = background | Multi-class: ED, ET, NET/NCR |
 
 ### 📝 Data Preprocessing
 - **Normalization**: Z-score or min-max scaling per image
@@ -55,7 +73,7 @@ path = kagglehub.dataset_download("mateuszbuda/lgg-mri-segmentation")
 
 ## 🛠️ Tech Stack
 
-### Core Framework
+### Primary Framework (PyTorch)
 ```
 🔥 PyTorch          # Model architecture & training
 📊 Albumentations   # Fast image & mask augmentation  
@@ -65,14 +83,13 @@ path = kagglehub.dataset_download("mateuszbuda/lgg-mri-segmentation")
 ⚡ tqdm            # Progress tracking
 ```
 
-### Optional Enhancements
+### Alternative Framework (TensorFlow)
 ```
-🚀 torch.cuda.amp      # Mixed precision training
-☁️  huggingface_hub     # Model hosting & sharing
-📦 Git LFS             # Large file version control
+🔥 TensorFlow/Keras  # Alternative implementation
+🖼️  tf.image         # Image preprocessing & augmentation
+📊 tf.data          # Efficient data pipeline
 ```
 
----
 
 ## 🏗️ Model Architecture
 
@@ -152,14 +169,44 @@ IoU = |A ∩ B| / |A ∪ B|
 
 > ⚠️ **Note**: Accuracy can be misleading due to background dominance. Focus on Dice/IoU for segmentation quality.
 
+---
+
+## 🚀 Getting Started
+
+### PyTorch (Primary Implementation)
+```python
+# Load pre-trained model
+model = UNet(in_channels=1, out_channels=1)
+model.load_state_dict(torch.load('best_model.pth'))
+
+# Segment brain tumor
+prediction = model(mri_slice)
+tumor_mask = (prediction > 0.5).float()
+```
+
+### TensorFlow (Alternative Implementation)
+```python
+# Load pre-trained model
+model = tf.keras.models.load_model('unet_brain_tumor_model')
+
+# Segment brain tumor
+prediction = model.predict(mri_slice)
+tumor_mask = (prediction > 0.5).astype('float32')
+```
 
 ---
 
 ## 📈 Results & Performance
 
+### 🎯 PyTorch Implementation (Primary)
+
 | **Metric** | **Score** |
 |------------|-----------|
-| **Binary Accuracy** | ~90% |
+| **Binary Accuracy** | **90%** |
+| **Framework** | PyTorch |
+| **Dataset** | LGG MRI Segmentation |
+
+> **📊 Note**: All performance metrics, training configurations, and evaluation results refer to the PyTorch implementation unless otherwise specified.
 
 ### 🔗 Pre-trained Models
 **Download Models**: [MEGA - Pre-trained Weights](https://mega.nz/folder/119WnKZT#_f_hnmFS1zDjivNvIQUsUQ)
